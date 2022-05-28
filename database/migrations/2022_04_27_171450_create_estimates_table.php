@@ -21,6 +21,7 @@ return new class extends Migration
             $table->double('estimated_cost');
             $table->integer('customer_id');
             $table->string('customer_name');
+            $table->longText('features_ids');
             $table->timestamps();
         });
     }

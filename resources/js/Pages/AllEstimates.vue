@@ -14,6 +14,7 @@
                     v-for="(estimate, i) in estimates"
                     :key="i"
                 >
+                    <div>{{ getFeatures(estimate.features_ids) }}</div>
                     <p>
                         Project Name:
                         <span class="text-green-700 font-bold">{{
@@ -29,7 +30,7 @@
                     <p>
                         Customer Name:
                         <span
-                            @click="showModal(estimate.customer_id)"
+                            @click="showModal(estimate.customer)"
                             class="underline decoration-blue-500 cursor-pointer text-green-700 font-bold"
                             >{{ estimate.customer_name }}</span
                         >
@@ -51,6 +52,9 @@
         </div>
         <ModalsContainer />
     </BreezeAuthenticatedLayout>
+    <div v-for="(item, index) in estimates" :key="index">
+        {{ item }}
+    </div>
 </template>
 <script setup>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
@@ -58,20 +62,20 @@ import { Head } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 import { $vfm, ModalsContainer } from "vue-final-modal";
 import UserModal from "./UserModal.vue";
-import { ref, defineProps } from "vue";
-const customer = ref({});
-const props = defineProps({
-    estimates: Array,
-});
-let showModal = (id) => {
-    axios.get(`/customers/${id}`).then((res) => {
-        customer.value = res.data.customer;
-        $vfm.show({
-            component: UserModal,
-            bind: {
-                customer: customer.value,
-            },
-        });
+import { ref } from "vue";
+const features = ref();
+const props = defineProps(["estimates", "features"]);
+let showModal = (data) => {
+    $vfm.show({
+        component: UserModal,
+        bind: {
+            customer: data,
+        },
     });
+};
+// console.log(props.estimates);
+// console.log(props.features);
+let getFeatures = (data) => {
+    return "sdf";
 };
 </script>

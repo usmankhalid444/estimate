@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Estimate;
 use App\Http\Requests\StoreEstimateRequest;
 use App\Http\Requests\UpdateEstimateRequest;
+use App\Models\Customer;
+use App\Models\Feature;
 use App\Models\FeatureEstimate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,8 +22,9 @@ class EstimateController extends Controller
      */
     public function index()
     {
-        $allEstimates = Estimate::latest()->get();
-        return Inertia::render('AllEstimates', ['estimates' => $allEstimates]);
+        $allEstimates = Estimate::with('customer')->latest()->get();
+        $features = Feature::latest()->get();
+        return Inertia::render('AllEstimates', ['features' => $features, 'estimates' => $allEstimates]);
     }
 
     /**
@@ -43,7 +46,6 @@ class EstimateController extends Controller
      */
     public function store(Request $request)
     {
-
         $validated =  $request->validate([
             'project_name' => 'required',
             'project_type' => 'required',
@@ -61,15 +63,16 @@ class EstimateController extends Controller
             'estimated_time' => $validated->estimated_time,
             'customer_name' => $validated->customer_name,
             'customer_id' => $validated->customer_id,
+            'features_ids' => $request->selected_feature_id,
         ]);
 
         if ($result) {
-            foreach ($request->selected_feature_id as $id) {
-                $featureEstimate = new FeatureEstimate;
-                $featureEstimate->feature_id = $id;
-                $featureEstimate->estimate_id = $result->id;
-                $featureEstimate->save();
-            }
+            // foreach ($request->selected_feature_id as $id) {
+            //     $featureEstimate = new FeatureEstimate;
+            //     $featureEstimate->feature_id = $id;
+            //     $featureEstimate->estimate_id = $result->id;
+            //     $featureEstimate->save();
+            // }
             return response()->json(['data' => Estimate::latest()->get()], 200);
         } else {
             return 'data not saved';

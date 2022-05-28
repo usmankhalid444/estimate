@@ -135,7 +135,6 @@ import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import { ref, defineProps } from "vue";
 import axios from "axios";
-import { debounce } from "lodash";
 
 const props = defineProps({
     features: Array,
